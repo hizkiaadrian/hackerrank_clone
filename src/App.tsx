@@ -1,20 +1,18 @@
 import React from 'react';
 import './App.css';
+import Question from './components/Question';
+import Editor from './components/Editor';
+
 
 function App() {
   return (
     <>
-    <div className='top-nav'>Hello</div>
+    <div className='top-nav'>OSGD Assessment Platform</div>
     <div className="App">
       <div className="grid">
-        <div style={{backgroundColor: 'white'}}>
-          <h1>Question</h1>
-        </div>
-        <div style={{backgroundColor: 'grey'}}>
-          <h1>Editor</h1>
-        </div>
+        <Question/>
+        <Editor/>
       </div>
-      
     </div>
     <div className="footer">OSGD</div>
     </>
