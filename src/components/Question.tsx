@@ -1,16 +1,6 @@
 import React from 'react';
 import '../styles/Question.css';
-
-interface QuestionParameters {
-    title: string;
-    objective: string;
-    example: JSX.Element;
-    functionDescription: JSX.Element;
-    constraints: JSX.Element;
-    sampleInput: JSX.Element;
-    sampleOutput: JSX.Element;
-    explanation: JSX.Element;
-}
+import {QuestionParameters} from '../interfaces/QuestionParameters.interface';
 
 function Question(props: QuestionParameters) {
     return (
