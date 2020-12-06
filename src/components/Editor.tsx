@@ -11,12 +11,12 @@ def solveMeFirst():
     pass
 
 if __name__ == "__main__":
-    a = input()
-    b = input()
+    a = int(input())
+    b = int(input())
     print(solveMeFirst(a, b))
 `
 
-function Editor() {
+function Editor(props: any) {
     return (
       <>
         <div style={{margin: "0.5rem 2rem"}}>
@@ -30,7 +30,7 @@ function Editor() {
                 style={{width:"100%", height:"90%"}}
                 mode="python"
                 theme="monokai" 
-                defaultValue={defaultValue}
+                defaultValue={props.defaultValue}
                 onLoad={(editor) => editor.getSession().foldAll(6, 11)}
             />
             <button>Run Code</button>
