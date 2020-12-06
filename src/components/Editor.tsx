@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useRef} from 'react';
 import AceEditor from 'react-ace';
 import 'brace/mode/python'
 import 'brace/theme/monokai'
@@ -26,28 +26,55 @@ const modalStyles = {
 Modal.setAppElement('#root')
 
 function Editor({defaultValue}: EditorParameters) {
-  const [modalIsOpen,setIsOpen] = React.useState(false);
+  const [modalIsOpen,setIsOpen] = useState(false);
+  const [buttonsDisabled, setButtonsDisabled] = useState(false);
 
-  const openModal = () => setIsOpen(true);
-  const closeModal = () => setIsOpen(false);
+  const codeEditor = useRef(null);
+
+  const runCode = (event: React.MouseEvent) => {
+    event.preventDefault();
+
+    setButtonsDisabled(true);
+    const code = (codeEditor.current as any)?.editor.getValue();
+    fetch('http://localhost:8080/run_code', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({code: code})
+    })
+    .then(async response => console.log(await response.json()))
+    .then(() => setButtonsDisabled(false));
+  }
+
+  const submitCode = (event: React.MouseEvent) => {
+    event.preventDefault();
+  
+    setButtonsDisabled(true);
+    const code = (codeEditor.current as any)?.editor.getValue();
+    console.log(code);
+  
+    setTimeout(() => setButtonsDisabled(false), 1000);
+  }
 
   return (
     <>
       <Modal
         isOpen={modalIsOpen}
-        onRequestClose={closeModal}
+        onRequestClose={() => setIsOpen(false)}
         style={modalStyles}
       >
-
         <h2>List of libraries supported</h2>
-        <button onClick={closeModal}>close</button>
+        <div>os, sys, glob, time, numpy, pandas, cv2</div>
+        <div className="right-aligned-row">
+          <button onClick={() => setIsOpen(false)}>Close</button>
+        </div>
       </Modal>
       <div className="editor">
         <div className="right-aligned-row">
-          <button className="help-button" onClick={openModal}>?</button>
+          <button className="help-button" onClick={() => setIsOpen(true)}>?</button>
         </div>
         <div className="editor-wrapper">
         <AceEditor 
+            ref={codeEditor}
             mode="python"
             theme="monokai" 
             defaultValue={defaultValue}
@@ -55,9 +82,9 @@ function Editor({defaultValue}: EditorParameters) {
         />
         </div>
         <div className="right-aligned-row">
-          <button onClick={() => console.log("Submitting")}>Submit</button>
+          <button onClick={submitCode} disabled={buttonsDisabled}>Submit</button>
           <span className="spacer"></span>
-          <button onClick={() => console.log("Running code")}>Run Code</button>
+          <button onClick={runCode} disabled={buttonsDisabled}>Run Code</button>
         </div>
       </div>
     </>
