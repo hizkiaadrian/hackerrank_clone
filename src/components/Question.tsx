@@ -4,7 +4,7 @@ import '../styles/Question.css';
 function Question() {
     return (
       <>
-        <div style={{margin: "0.5rem 2rem"}}>
+        <div className="question">
           <h1>Addition of Two Numbers</h1>
           <section id="objective">
               <div>

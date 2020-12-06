@@ -7,7 +7,7 @@ import Editor from './components/Editor';
 function App() {
   return (
     <>
-    <div className='top-nav'>OSGD Assessment Platform</div>
+    <div className='top-nav'><h3 style={{margin:'0', padding:'0'}}>OSGD Assessment Platform</h3></div>
     <div className="App">
       <div className="grid">
         <Question/>
