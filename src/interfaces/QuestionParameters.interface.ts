@@ -1,4 +1,8 @@
 export default interface QuestionParameters {
+    question: Question;
+}
+
+interface Question {
     title: string;
     objective: string;
     example: JSX.Element;
