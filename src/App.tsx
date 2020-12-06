@@ -5,7 +5,7 @@ import Editor from './components/Editor';
 
 const defaultEditorValue: string =
 `# You can import relevant libraries here.
-# e.g. import numpy
+# e.g. import os
 # For a complete list of available libraries, click on the '?' button above.
 
 def solveMeFirst():
@@ -21,7 +21,7 @@ function App() {
   return (
     <>
       <div className='top-nav'>
-        <h3 style={{margin:'0', padding:'0'}}>
+        <h3>
           OSGD Assessment Platform
         </h3>
       </div>
@@ -50,7 +50,10 @@ function App() {
           <Editor defaultValue={defaultEditorValue}/>
         </div>
       </div>
-      <div className="footer">OSGD</div>
+      <div className="footer">
+        OSGD
+        <span className="spacer"></span>
+        <a href="mailto:hizkiaadrians@gmail.com">Technical problems?</a></div>
     </>
   );
 }

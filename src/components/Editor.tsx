@@ -2,39 +2,35 @@ import React from 'react';
 import AceEditor from 'react-ace';
 import 'brace/mode/python'
 import 'brace/theme/monokai'
+import '../styles/Editor.css'
+import EditorParameters from '../interfaces/EditorParameters.interface'
 
-const defaultValue: string = 
-`# You can import relevant libraries here.
-# For a complete list of available libraries, click on the '?' button above.
+const foldMainFunction = (editor: any) => {
+  const lines: string[] = editor.session.doc.getAllLines();
+  const startLine: number = lines.findIndex((x: string) => x==="if __name__ == \"__main__\":");
+  editor.getSession().foldAll(startLine, lines.length);
+}
 
-def solveMeFirst():
-    pass
-
-if __name__ == "__main__":
-    a = int(input())
-    b = int(input())
-    print(solveMeFirst(a, b))
-`
-
-function Editor(props: any) {
+function Editor({defaultValue}: EditorParameters) {
     return (
       <>
-        <div style={{margin: "0.5rem 2rem"}}>
-            <div style={{display: "flex", flexDirection: "row-reverse", flex: "1 1 auto", marginBottom: "0.5rem"}}>
-            <select id="language">
-                <option value="python">Python</option>
-                <option value="javascript">JavaScript</option>
-            </select>
-            </div>
-            <AceEditor 
-                style={{width:"100%", height:"90%"}}
-                mode="python"
-                theme="monokai" 
-                defaultValue={props.defaultValue}
-                onLoad={(editor) => editor.getSession().foldAll(6, 11)}
-            />
+        <div className="editor">
+          <div className="right-aligned-row">
+            <button className="help-button">?</button>
+          </div>
+          <div className="editor-wrapper">
+          <AceEditor 
+              mode="python"
+              theme="monokai" 
+              defaultValue={defaultValue}
+              onLoad={foldMainFunction}
+          />
+          </div>
+          <div className="right-aligned-row">
             <button>Run Code</button>
+            <span className="spacer"></span>
             <button>Submit</button>
+          </div>
         </div>
       </>
     )

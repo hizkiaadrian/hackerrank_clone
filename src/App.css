@@ -3,6 +3,11 @@
   padding: 1rem 2rem;
 }
 
+.top-nav > * {
+  margin: 0;
+  padding: 0;
+}
+
 .App {
   display: flex;
   flex-direction: row;
@@ -19,4 +24,17 @@
 
 .footer {
   padding: 1rem 2rem;
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.spacer {
+  margin: 0 2rem;
+}
+
+.footer > * {
+  margin: 0;
+  padding: 0;
 }
