@@ -29,9 +29,15 @@ function Login() {
         fetch(Links.validate_user, {method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(formInput)
-        }).then(async response => console.log(await response.json()));
+        }).then(async response => {
+            const res = await response.json();
+            if (res.success) {
+                sessionStorage.setItem('uuid', res.userId);
+                history.push("/assessment");
+            }
 
-        // history.push("/assessment");
+            else setErrorMsg(res.error);
+        });
     }
 
     return (

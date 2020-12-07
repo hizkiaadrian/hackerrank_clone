@@ -1,5 +1,6 @@
 import React, {useState, useRef, MouseEvent} from 'react';
 import AceEditor from 'react-ace';
+import {useHistory} from 'react-router-dom';
 import 'brace/mode/python';
 import 'brace/theme/monokai';
 import '../styles/Editor.css';
@@ -19,6 +20,8 @@ function Editor({defaultValue, testCases}: EditorParameters) {
   const [testCaseResults, setTestCaseResults] = useState<TestCaseResult[]>([]);
 
   const codeEditor = useRef(null);
+
+  const history = useHistory();
 
   const runCode = (event: MouseEvent) => {
     event.preventDefault();
@@ -47,8 +50,13 @@ function Editor({defaultValue, testCases}: EditorParameters) {
       body: JSON.stringify({code: code})
     })
     .then(async response => {
-      console.log(await response.json());
-      setButtonsDisabled(false);
+      const res = await response.json();
+      if (res.success) {
+        history.push("/thank-you");
+      } else {
+        setButtonsDisabled(false);
+        return false;
+      }
     });
   }
 

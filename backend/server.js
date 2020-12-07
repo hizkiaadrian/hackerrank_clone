@@ -49,7 +49,7 @@ app.post('/run_code', (req, res) => {
         python.stdin.end();
         python.on('close', () => {
             testCaseResults.push({success: isSuccess, stdin: testCases[i].input, stdout: stdout, expected: testCases[i].expectedOutput});
-            if (i === testCases.length) emitter.emit('end');
+            if (i === testCases.length - 1) emitter.emit('end');
         });
     }
 
@@ -103,11 +103,11 @@ app.post('/validate_user', (req, res) => {
                 assessmentStarted: Date.now()
             }, (err, _) => {
                 if (err) {
-                    res.send({success: false, error: err});
+                    res.send({success: false, error: "Something went wrong."});
                     return;
                 }
 
-                res.send({success: true});
+                res.send({success: true, userId: user._id});
                 return;
             });
         }
