@@ -49,6 +49,7 @@
 .test-cases {
     display: none;
     margin: 0.5rem 0;
+    flex-direction: column;
 }
 
 .full-width {
@@ -62,8 +63,6 @@
 
 .tab-panel {
     background-color: #fff;
-    border-radius: 1rem;
-    outline: none;
 }
 
 .tab-panel-content {

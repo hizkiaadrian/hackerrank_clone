@@ -2,11 +2,13 @@ import React, {useState, useRef, MouseEvent} from 'react';
 import AceEditor from 'react-ace';
 import 'brace/mode/python';
 import 'brace/theme/monokai';
-import '../styles/Editor.css'
+import '../styles/Editor.css';
 import EditorParameters from '../interfaces/EditorParameters.interface'
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import Links from '../api-links.json';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 
 const foldMainFunction = (editor: any) => {
   const lines: string[] = editor.session.doc.getAllLines();
@@ -16,7 +18,7 @@ const foldMainFunction = (editor: any) => {
 
 function Editor({defaultValue, testCases}: EditorParameters) {
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
-  const [testCaseResults, setTestCaseResults] = useState([]);
+  const [testCaseResults, setTestCaseResults] = useState<any[]>([]);
 
   const codeEditor = useRef(null);
   const testCasePanel = useRef(null);
@@ -33,7 +35,6 @@ function Editor({defaultValue, testCases}: EditorParameters) {
     })
     .then(async response => {
       setTestCaseResults((await response.json()).testCaseResults);
-
       setButtonsDisabled(false);
       const tC : any = testCasePanel.current;
       tC.style.display = 'flex';
@@ -50,10 +51,10 @@ function Editor({defaultValue, testCases}: EditorParameters) {
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({code: code})
     })
-    .then(async response => console.log(await response.json()))
-    .then(() => setButtonsDisabled(false));
-  
-    setTimeout(() => setButtonsDisabled(false), 1000);
+    .then(async response => {
+      console.log(await response.json());
+      setButtonsDisabled(false);
+    });
   }
 
   return (
@@ -74,10 +75,22 @@ function Editor({defaultValue, testCases}: EditorParameters) {
           <button onClick={runCode} disabled={buttonsDisabled}>Run Code</button>
         </div>
         <div className="test-cases" ref={testCasePanel}>
+          {testCaseResults && testCaseResults.every(result => result && result.success && result.stdout.trim() === result.expected.trim()) && 
+            <h3>Congratulations! You passed all test cases. Press "Submit" to submit your code</h3>
+          }
           <Tabs className="full-width">
           {testCases &&
             <TabList className="tab-list">
-              {testCases.map((_, index) => <Tab key={index}>Test Case {index}</Tab>)}
+              {testCases.map((_, index) => {
+                let result = testCaseResults[index];
+                const testCasePassed = result && result.success && result.stdout.trim() === result.expected.trim();
+
+                return(
+                  <Tab key={index}>
+                    <FontAwesomeIcon icon={testCasePassed ? faCheckCircle : faTimesCircle}/> Test Case {index}
+                  </Tab>
+                );
+              })}
             </TabList>
           }
           {testCaseResults && testCaseResults.map((value: any, index) => {
@@ -85,7 +98,11 @@ function Editor({defaultValue, testCases}: EditorParameters) {
             return (
               <TabPanel className='tab-panel' key={index}>
                 <div className="tab-panel-content">
-                  <h2 className={testCasePassed ? "success": "error"}>Test case {testCasePassed ? "passed" : "failed"}</h2>
+                  <h2 className={testCasePassed ? "success": "error"}>
+                    <FontAwesomeIcon icon={testCasePassed ? faCheckCircle : faTimesCircle}/>
+                    <span className="spacer"/>
+                    Test case {testCasePassed ? "passed" : "failed"}
+                  </h2>
                   <div>Input (stdin): 
                     <div className="codeblock multi-line output">
                       {value.stdin}
@@ -104,7 +121,8 @@ function Editor({defaultValue, testCases}: EditorParameters) {
                 </div>
               </TabPanel>
             )
-          })}
+          })
+          }
           </Tabs>
         </div>
       </div>
