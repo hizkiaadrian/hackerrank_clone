@@ -10,7 +10,7 @@ const mongoose = require('mongoose');
 const User = require('./db_schemas/user');
 
 const mongoDB = 'mongodb://127.0.0.1/my_database';
-mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
 
 const db = mongoose.connection;
 
@@ -60,9 +60,19 @@ app.post('/run_code', (req, res) => {
 });
 
 app.post('/submit', (req, res) => {
-    fs.writeFile("submissions/script.py", req.body.code, err => {
+    let userId = req.body.userId;
+
+    fs.writeFile(`submissions/script_${userId}.py`, req.body.code, err => {
         if (err) res.send({success: false, error: err});
-        else res.send({success: true});
+        else {
+            User.findByIdAndUpdate(userId, {
+                submission: `script_${userId}.py`,
+                submissionTime: Date.now()
+            }, (err) => {
+                if (err) res.send({success: false, error: err});
+                else res.send({success: true});
+            });
+        }
     });
 });
 
