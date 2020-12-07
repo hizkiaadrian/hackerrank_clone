@@ -1,0 +1,34 @@
+.login {
+    display: flex;
+    flex-direction: column;
+    flex : 1 1 auto;
+    justify-content: center;
+    align-items: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 300px;
+}
+
+form > div {
+    margin-bottom: 0.8rem;
+    width: 100%;
+}
+
+.input-group {
+    display: inherit;
+    flex-direction: inherit;
+}
+
+.input-group > label {
+    margin-bottom: 0.4rem;
+}
+
+.error-message {
+    height: 1rem;
+    text-align: center;
+    color: rgb(189, 7, 7);
+}

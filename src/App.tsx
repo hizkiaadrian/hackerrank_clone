@@ -1,8 +1,15 @@
 import React from 'react';
+import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
 import './App.css';
-import Question from './components/Question';
-import Editor from './components/Editor';
-import AdditionOfTwoNumbers from './questions/AdditionOfTwoNumbers';
+import Login from './components/Login';
+import Assessment from './components/Assessment';
+
+const PageNotFound = () => (
+  <div className="page-not-found">
+    <h2>404 Page Not Found</h2>
+    <Link to="/">Home</Link>
+  </div>
+)
 
 function App() {
   return (
@@ -13,10 +20,13 @@ function App() {
         </h3>
       </div>
       <div className="App">
-        <div className="grid">
-          <Question question={AdditionOfTwoNumbers.question} />
-          <Editor defaultValue={AdditionOfTwoNumbers.defaultEditorValue} testCases={AdditionOfTwoNumbers.testCases}/>
-        </div>
+        <Router>
+          <Switch>
+            <Route path="/" exact component={Login} />
+            <Route path="/assessment" component={Assessment} />
+            <Route render={PageNotFound} />
+          </Switch>
+        </Router>
       </div>
       <div className="footer">
         OSGD

@@ -10,16 +10,9 @@
 
 .App {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex: 1 1 auto;
   background-color: #9bbcf2;
-}
-
-.grid {
-  width: 100%;
-  --auto-grid-min-size: 600px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(var(--auto-grid-min-size), 1fr));
 }
 
 .footer {
@@ -37,4 +30,13 @@
 .footer > * {
   margin: 0;
   padding: 0;
+}
+
+.page-not-found {
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  justify-content: center;
+  align-items: center;
 }

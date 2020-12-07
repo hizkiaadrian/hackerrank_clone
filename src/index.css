@@ -28,6 +28,16 @@ button {
   outline: none;
 }
 
+input {
+  padding: 0.5rem;
+  border-radius: 3rem;
+  outline: none;
+}
+
+input:focus {
+  box-shadow: 0 0 1pt 1pt blue;
+}
+
 #root {
   display: flex;
   flex: 1;
