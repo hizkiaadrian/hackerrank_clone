@@ -15,7 +15,7 @@ function App() {
       <div className="App">
         <div className="grid">
           <Question question={AdditionOfTwoNumbers.question} />
-          <Editor defaultValue={AdditionOfTwoNumbers.defaultEditorValue}/>
+          <Editor defaultValue={AdditionOfTwoNumbers.defaultEditorValue} testCases={AdditionOfTwoNumbers.testCases}/>
         </div>
       </div>
       <div className="footer">

@@ -17,23 +17,32 @@ app.get('/', (_, res) => res.sendFile(path.join(__dirname, 'build', 'index.html'
 
 app.post('/run_code', (req, res) => {
     fs.writeFileSync("temp/script.py", req.body.code, (err) => console.log(err));
-    let dataToSend, isSuccess;
+    let stdout, isSuccess;
+    const stdin = '5\n6\n';
 
     const python = spawn('python', ['temp/script.py']);
     python.stdout.on('data', data => {
-        dataToSend = data.toString();
+        stdout = data.toString();
         isSuccess = true;
     });
     python.stderr.on('data', data => {
-        dataToSend = data.toString();
+        stdout = data.toString();
         isSuccess = false;
     });
-    python.stdin.write('5\n6\n');
+    python.stdin.write(stdin);
     python.stdin.end();
     python.on('close', _ => {
-        res.send({success: isSuccess, consoleOutput: dataToSend});
+        res.send({success: isSuccess, stdin: stdin, stdout: stdout});
         fs.unlinkSync('temp/script.py');
     });
 });
 
-app.listen(process.env.PORT || 8080, () => console.log(`App running on port ${process.env.PORT || 8080}`));
+app.post('/submit', (req, res) => {
+    fs.writeFile("submissions/script.py", req.body.code, err => {
+        if (err) res.send({success: false, error: err});
+        else res.send({success: true});
+    });
+});
+
+const port = process.env.PORT || 8080;
+app.listen(port, () => console.log(`App running on port ${port}`));

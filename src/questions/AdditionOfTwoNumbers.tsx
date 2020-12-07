@@ -34,7 +34,12 @@ if __name__ == "__main__":
     a = int(input())
     b = int(input())
     print(solveMeFirst(a, b))
-`
+`,
+  testCases: [
+    {input: "2\n3\n", expectedOutput:'5'},
+    {input: "5\n6\n", expectedOutput:'11'},
+    {input: "100\n1000\n", expectedOutput:'1100'},
+  ]
 }
 
 export default AdditionOfTwoNumbers;

@@ -35,3 +35,32 @@
     padding: 0;
     margin: 0;
 }
+
+.output {
+    margin: 0.5rem 0.5rem;
+    width: auto !important;
+    border-radius: 1rem;
+}
+
+.multi-line {
+    white-space: pre-wrap;
+}
+
+.test-cases {
+    display: none;
+    margin: 0.5rem 0;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.tab-list {
+    margin: 0;
+    padding-inline-start: 0;
+}
+
+.tab-panel {
+    padding: 0.5rem 0.5rem 2rem 0.5rem;
+    background-color: #fff;
+}
