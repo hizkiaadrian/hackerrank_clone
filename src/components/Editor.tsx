@@ -4,7 +4,6 @@ import 'brace/mode/python';
 import 'brace/theme/monokai';
 import '../styles/Editor.css'
 import EditorParameters from '../interfaces/EditorParameters.interface'
-import Modal from 'react-modal';
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import Links from '../api-links.json';
@@ -15,21 +14,7 @@ const foldMainFunction = (editor: any) => {
   editor.getSession().foldAll(startLine, lines.length);
 }
 
-const modalStyles = {
-  content : {
-      top                   : '50%',
-      left                  : '50%',
-      right                 : 'auto',
-      bottom                : 'auto',
-      transform             : 'translate(-50%, -50%)',
-      minWidth              : '500px'
-  },
-  overlay: {zIndex: 10}
-};
-Modal.setAppElement('#root')
-
 function Editor({defaultValue, testCases}: EditorParameters) {
-  const [modalIsOpen,setIsOpen] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const [testCaseResults, setTestCaseResults] = useState([]);
 
@@ -73,21 +58,7 @@ function Editor({defaultValue, testCases}: EditorParameters) {
 
   return (
     <>
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={() => setIsOpen(false)}
-        style={modalStyles}
-      >
-        <h2>List of libraries supported</h2>
-        <div>os, sys, glob, time, numpy, pandas, cv2</div>
-        <div className="right-aligned-row">
-          <button onClick={() => setIsOpen(false)}>Close</button>
-        </div>
-      </Modal>
       <div className="editor">
-        <div className="right-aligned-row">
-          <button className="help-button" onClick={() => setIsOpen(true)}>?</button>
-        </div>
         <div className="editor-wrapper">
         <AceEditor 
             ref={codeEditor}
@@ -110,24 +81,26 @@ function Editor({defaultValue, testCases}: EditorParameters) {
             </TabList>
           }
           {testCaseResults && testCaseResults.map((value: any, index) => {
+            let testCasePassed = value.success && (value.stdout.trim() === value.expected.trim());
             return (
               <TabPanel className='tab-panel' key={index}>
                 <div className="tab-panel-content">
-                <div>Input (stdin): 
-                  <div className="codeblock multi-line output">
-                    {value.stdin}
+                  <h2 className={testCasePassed ? "success": "error"}>Test case {testCasePassed ? "passed" : "failed"}</h2>
+                  <div>Input (stdin): 
+                    <div className="codeblock multi-line output">
+                      {value.stdin}
+                    </div>
                   </div>
-                </div>
-                <div>Your output (stdout):
-                  <div className="codeblock multi-line output">
-                    {value.stdout}
+                  <div>Your output (stdout):
+                    <div className={"codeblock multi-line output " + (value.success ? "" : "error")}>
+                      {value.stdout}
+                    </div>
                   </div>
-                </div>
-                <div>Expected output
-                  <div className="codeblock multi-line output">
-                    {value.expected}
+                  <div>Expected output
+                    <div className="codeblock multi-line output">
+                      {value.expected}
+                    </div>
                   </div>
-                </div>
                 </div>
               </TabPanel>
             )

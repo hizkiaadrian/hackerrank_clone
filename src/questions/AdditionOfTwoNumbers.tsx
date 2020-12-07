@@ -4,11 +4,11 @@ import {useLatex as latexify} from '../components/Question';
 const AdditionOfTwoNumbers = {
   question: {
     title: "Addition of Two Numbers",
-    objective: "Complete the function solveMeFirst to compute the sum of two integers.",
+    objective: "Complete the function addTwoNumbers to compute the sum of two integers.",
     example: <div>{latexify("a = 7")}<br/>{latexify("b = 3")}<br/>Returns {latexify("10")}.</div>,
     functionDescription:
       <div>
-        solveMeFirst has the following parameters: 
+        addTwoNumbers has the following parameters: 
         <ul>
           <li>int a: the first value</li>
           <li>int b: the second value</li>
@@ -25,20 +25,19 @@ const AdditionOfTwoNumbers = {
   defaultEditorValue:
 `# You can import relevant libraries here.
 # e.g. import os
-# For a complete list of available libraries, click on the '?' button above.
 
-def solveMeFirst(a, b):
+def addTwoNumbers(a, b):
     pass
 
 if __name__ == "__main__":
     a = int(input())
     b = int(input())
-    print(solveMeFirst(a, b))
+    print(addTwoNumbers(a, b))
 `,
   testCases: [
-    {input: "2\n3\n", expectedOutput:'5'},
-    {input: "5\n6\n", expectedOutput:'11'},
-    {input: "100\n1000\n", expectedOutput:'1100'},
+    {input: "2\n3\n", expectedOutput:'5\n'},
+    {input: "5\n6\n", expectedOutput:'11\n'},
+    {input: "100\n1000\n", expectedOutput:'1100\n'},
   ]
 }
 

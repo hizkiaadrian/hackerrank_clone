@@ -69,3 +69,11 @@
 .tab-panel-content {
     padding: 1rem;
 }
+
+.success {
+    color: green;
+}
+
+.error {
+    color: red;
+}
