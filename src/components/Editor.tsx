@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, MouseEvent} from 'react';
 import AceEditor from 'react-ace';
 import 'brace/mode/python';
 import 'brace/theme/monokai';
@@ -31,13 +31,12 @@ Modal.setAppElement('#root')
 function Editor({defaultValue, testCases}: EditorParameters) {
   const [modalIsOpen,setIsOpen] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
-  const [stdin, setStdin] = useState("");
-  const [stdout, setStdout] = useState("");
+  const [testCaseResults, setTestCaseResults] = useState([]);
 
   const codeEditor = useRef(null);
-  const testCase = useRef(null);
+  const testCasePanel = useRef(null);
 
-  const runCode = (event: React.MouseEvent) => {
+  const runCode = (event: MouseEvent) => {
     event.preventDefault();
 
     setButtonsDisabled(true);
@@ -45,20 +44,18 @@ function Editor({defaultValue, testCases}: EditorParameters) {
     fetch(Links.run_code, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({code: code})
+      body: JSON.stringify({code: code, testCases: testCases})
     })
     .then(async response => {
-      let res = await response.json();
-      setStdin(res.stdin);
-      setStdout(res.stdout);
+      setTestCaseResults((await response.json()).testCaseResults);
 
       setButtonsDisabled(false);
-      const tC : any = testCase.current;
+      const tC : any = testCasePanel.current;
       tC.style.display = 'flex';
     });
   }
 
-  const submitCode = (event: React.MouseEvent) => {
+  const submitCode = (event: MouseEvent) => {
     event.preventDefault();
   
     setButtonsDisabled(true);
@@ -105,29 +102,36 @@ function Editor({defaultValue, testCases}: EditorParameters) {
           <span className="spacer"></span>
           <button onClick={runCode} disabled={buttonsDisabled}>Run Code</button>
         </div>
-        <div className="test-cases" ref={testCase}>
+        <div className="test-cases" ref={testCasePanel}>
           <Tabs className="full-width">
+          {testCases &&
             <TabList className="tab-list">
-              {testCases.map((_, index) => <Tab>Test Case {index}</Tab>)}
+              {testCases.map((_, index) => <Tab key={index}>Test Case {index}</Tab>)}
             </TabList>
-
-            <TabPanel className='tab-panel'>
-              <div>Input (stdin): 
-                <div className="codeblock multi-line output">
-                  {stdin}
+          }
+          {testCaseResults && testCaseResults.map((value: any, index) => {
+            return (
+              <TabPanel className='tab-panel' key={index}>
+                <div className="tab-panel-content">
+                <div>Input (stdin): 
+                  <div className="codeblock multi-line output">
+                    {value.stdin}
+                  </div>
                 </div>
-              </div>
-              <div>Your output (stdout):
-                <div className="codeblock multi-line output">
-                  {stdout}
+                <div>Your output (stdout):
+                  <div className="codeblock multi-line output">
+                    {value.stdout}
+                  </div>
                 </div>
-              </div>
-              <div>Expected output
-                <div className="codeblock multi-line output">
-                  11
+                <div>Expected output
+                  <div className="codeblock multi-line output">
+                    {value.expected}
+                  </div>
                 </div>
-              </div>
-            </TabPanel>
+                </div>
+              </TabPanel>
+            )
+          })}
           </Tabs>
         </div>
       </div>

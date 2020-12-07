@@ -61,6 +61,11 @@
 }
 
 .tab-panel {
-    padding: 0.5rem 0.5rem 2rem 0.5rem;
     background-color: #fff;
+    border-radius: 1rem;
+    outline: none;
+}
+
+.tab-panel-content {
+    padding: 1rem;
 }

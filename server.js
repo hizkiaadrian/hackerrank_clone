@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+const events = require('events');
 
 const app = express();
 
@@ -17,22 +18,33 @@ app.get('/', (_, res) => res.sendFile(path.join(__dirname, 'build', 'index.html'
 
 app.post('/run_code', (req, res) => {
     fs.writeFileSync("temp/script.py", req.body.code, (err) => console.log(err));
-    let stdout, isSuccess;
-    const stdin = '5\n6\n';
+    const testCases = req.body.testCases;
 
-    const python = spawn('python', ['temp/script.py']);
-    python.stdout.on('data', data => {
-        stdout = data.toString();
-        isSuccess = true;
-    });
-    python.stderr.on('data', data => {
-        stdout = data.toString();
-        isSuccess = false;
-    });
-    python.stdin.write(stdin);
-    python.stdin.end();
-    python.on('close', _ => {
-        res.send({success: isSuccess, stdin: stdin, stdout: stdout});
+    let testCaseResults = [];
+    const emitter = new events.EventEmitter();
+
+    for (let i=0; i < testCases.length; i++) {
+        const python = spawn('python', ['temp/script.py']);
+
+        let stdout, isSuccess;
+        python.stdout.on('data', data => {
+            stdout = data.toString();
+            isSuccess = true;
+        });
+        python.stderr.on('data', data => {
+            stdout = data.toString();
+            isSuccess = false;
+        });
+        python.stdin.write(testCases[i].input);
+        python.stdin.end();
+        python.on('close', () => {
+            testCaseResults.push({success: isSuccess, stdin: testCases[i].input, stdout: stdout, expected: testCases[i].expectedOutput});
+            if (i === testCases.length) emitter.emit('end');
+        });
+    }
+
+    emitter.on('end', () => {
+        res.send({testCaseResults: testCaseResults});
         fs.unlinkSync('temp/script.py');
     });
 });
