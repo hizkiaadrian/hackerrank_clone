@@ -1,4 +1,0 @@
-{
-    "submit": "http://localhost:8080/submit",
-    "run_code": "http://localhost:8080/run_code"
-}

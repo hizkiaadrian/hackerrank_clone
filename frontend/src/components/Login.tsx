@@ -1,14 +1,18 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import '../styles/Login.css';
+import Links from '../api-links.json';
 
 function validateEmail(email : string) {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
 }
 
-function Login(props: any) {
+function Login() {
     const [formInput, setFormInput] = useState({name: "", email: ""});
     const [errorMsg, setErrorMsg] = useState("");
+
+    const history = useHistory();
 
     const onChange = (event : ChangeEvent<HTMLInputElement>) => 
         setFormInput(oldForm => ({...oldForm, [event.target.id]: event.target.value}));
@@ -22,7 +26,12 @@ function Login(props: any) {
             return false;
         }
 
-        props.history.push("/assessment");
+        fetch(Links.validate_user, {method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(formInput)
+        }).then(async response => console.log(await response.json()));
+
+        // history.push("/assessment");
     }
 
     return (
