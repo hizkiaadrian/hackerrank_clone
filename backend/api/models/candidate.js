@@ -120,7 +120,6 @@ module.exports.downloadSubmission = (req, res) => {
 
     fs.access(`submissions/${filePath}`, fs.constants.F_OK, (err) => {
         if (err) {
-            console.log(err);
             res.writeHead(400, {"Content-Type": "text/plain"});
             res.end("ERROR File does not exist");
         }

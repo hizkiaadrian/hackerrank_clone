@@ -37,7 +37,11 @@ if __name__ == "__main__":
 	testCases: [
 		{input: "2\n3\n", expectedOutput:'5\n'},
 		{input: "5\n6\n", expectedOutput:'11\n'},
-		{input: "100\n1000\n", expectedOutput:'1100\n'},
+		{input: "110\n1000\n", expectedOutput:'1110\n'},
+		{input: "0\n1000\n", expectedOutput:'1000\n'},
+		{input: "-1\n2\n", expectedOutput:'1\n'},
+		{input: "0\n0\n", expectedOutput:'0\n'},
+		{input: "10\n10\n", expectedOutput:'20\n'}
 	]
 };
 

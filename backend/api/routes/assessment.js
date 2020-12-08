@@ -6,7 +6,7 @@ const router = require("express").Router();
 
 const Candidate = require("../models/candidate");
 
-router.post('/run_code', (req, res) => {
+router.post('/run_code', async (req, res) => {
     fs.writeFileSync("temp/script.py", req.body.code, (err) => console.log(err));
     const testCases = req.body.testCases;
 
@@ -28,12 +28,14 @@ router.post('/run_code', (req, res) => {
         python.stdin.write(testCases[i].input);
         python.stdin.end();
         python.on('close', () => { // jshint ignore:line
-            testCaseResults.push({success: isSuccess, stdin: testCases[i].input, stdout: stdout, expected: testCases[i].expectedOutput});
-            if (i === testCases.length - 1) emitter.emit('end');
+            testCaseResults.push({success: isSuccess, caseNum: i, stdin: testCases[i].input, stdout: stdout, expected: testCases[i].expectedOutput});
+            if (testCaseResults.length === testCases.length) emitter.emit('end');
         });
     }
 
     emitter.on('end', () => {
+        testCaseResults.sort((a, b) => (a.caseNum > b.caseNum) ? 1 : -1);
+        testCaseResults.forEach(result => delete result.caseNum);
         res.send({testCaseResults: testCaseResults});
         fs.unlinkSync('temp/script.py');
     });
