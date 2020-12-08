@@ -8,6 +8,7 @@ import Links from '../../../configs/api-links.json';
 import AceEditor from 'react-ace';
 import 'brace/mode/python';
 import 'brace/theme/monokai';
+import Loader from 'react-loader-spinner';
 
 const foldMainFunction = (editor: any) => {
 	const lines: string[] = editor.session.doc.getAllLines();
@@ -16,19 +17,20 @@ const foldMainFunction = (editor: any) => {
 };
 
 function Editor({defaultValue, testCases, deadline}: {defaultValue: string, testCases: TestCase[], deadline: Date}) {
-	const [buttonsDisabled, setButtonsDisabled] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+	const [errorMsg, setErrorMsg] = useState("");
 	const [testCaseResults, setTestCaseResults] = useState<TestCaseResult[]>([]);
-
-	const deadlineString = deadline.toLocaleString('en-GB', {day:"numeric", month:"long", year: "numeric", hour:"numeric", minute: "numeric"});
 
 	const codeEditor = useRef(null);
 
 	const history = useHistory();
+	
+	const deadlineString = deadline.toLocaleString('en-GB', {day:"numeric", month:"long", year: "numeric", hour:"numeric", minute: "numeric"});
 
 	const runCode = (event: MouseEvent) => {
 		event.preventDefault();
 
-		setButtonsDisabled(true);
+		setIsLoading(true);
 		const code = (codeEditor.current as any)?.editor.getValue();
 		fetch(Links.run_code, {
 			method: 'POST',
@@ -37,14 +39,14 @@ function Editor({defaultValue, testCases, deadline}: {defaultValue: string, test
 		})
 			.then(async response => {
 				setTestCaseResults((await response.json()).testCaseResults);
-				setButtonsDisabled(false);
+				setIsLoading(false);
 			});
 	};
 
 	const submitCode = (event: MouseEvent) => {
 		event.preventDefault();
 	
-		setButtonsDisabled(true);
+		setIsLoading(true);
 		const code = (codeEditor.current as any)?.editor.getValue();
 		fetch(Links.submit, {
 			method: 'POST',
@@ -56,7 +58,9 @@ function Editor({defaultValue, testCases, deadline}: {defaultValue: string, test
 				if (res.success) {
 					history.push("/thank-you");
 				} else {
-					setButtonsDisabled(false);
+					setIsLoading(false);
+					setErrorMsg(res.error);
+					setTimeout(() => setErrorMsg(""), 2000);
 					return false;
 				}
 			});
@@ -75,16 +79,26 @@ function Editor({defaultValue, testCases, deadline}: {defaultValue: string, test
 				/>
 			</div>
 			<div className="right-aligned-row">
-				<button onClick={submitCode} disabled={buttonsDisabled}>Submit</button>
+				<button onClick={submitCode} disabled={isLoading}>Submit</button>
 				<span className="spacer"></span>
-				<button onClick={runCode} disabled={buttonsDisabled}>Run Code</button>
+				<button onClick={runCode} disabled={isLoading}>Run Code</button>
 			</div>
-				{testCaseResults.length > 0 && 
+			{errorMsg && <div>{errorMsg}</div>}
+			{isLoading 
+				? <div className="centered-page">
+					<Loader
+						type="Puff"
+						color="#00BFFF"
+						height={100}
+						width={100}
+					/>
+				</div>
+				: testCaseResults.length > 0 && 
 					<TestCasesPanel 
 						testCaseResults={testCaseResults}
 						testCases={testCases}
 					/>
-				}
+			}
 		</div>
 	);
 };
