@@ -8,6 +8,8 @@ function NewUserForm() {
 
     const onChange = (event : ChangeEvent<HTMLInputElement>) => setFormInput(oldForm => ({...oldForm, [event.target.id]:event.target.value}));
 
+    const resetForm = () => setFormInput({name: "", email: ""});
+
     const onSubmit = (event : FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
@@ -18,12 +20,13 @@ function NewUserForm() {
         }
 
         fetch(Links.create_new_user, {method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Content-Type': 'application/json', 'Authorization': localStorage.getItem("token") ?? ""},
             body: JSON.stringify(formInput)
         }).then(async response => {
             const res = await response.json();
             if (res.success) {
                 console.log(res);
+                resetForm();
             }
             else setErrorMsg(res.error);
         });
@@ -31,6 +34,7 @@ function NewUserForm() {
     
     return (
         <>
+            <h3>Create new candidate</h3>
             <form onSubmit={onSubmit}>
                 <div className="input-group">
                     <label htmlFor="name">Name</label>
@@ -39,6 +43,7 @@ function NewUserForm() {
                         type="text"
                         placeholder="Required" 
                         onChange={onChange}
+                        value={formInput.name}
                     />
                     <label htmlFor="email">Email</label>
                     <input 
@@ -46,6 +51,7 @@ function NewUserForm() {
                         type="text"
                         placeholder="Required" 
                         onChange={onChange}
+                        value={formInput.email}
                     />
                 </div>
                 <button type="submit">Create new user</button>

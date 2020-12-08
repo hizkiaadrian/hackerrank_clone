@@ -5,13 +5,13 @@ import PageNotFound from "../pages/NotFound";
 import ThankYou from "../pages/ThankYou";
 import AdminDashboard from '../pages/Admin/Dashboard/index';
 
-const routes: {path: string, component: any, exact: boolean}[] = [
-    {path:'/', component: Login, exact:true},
-    {path:'/admin/login', component: AdminLogin, exact: false},
-    {path:'/admin/dashboard', component: AdminDashboard, exact: false},
-    {path:'/assessment', component: Assessment, exact:false},
-    {path:'/thank-you', component:ThankYou, exact:false},
-    {path:'/*', component: PageNotFound, exact:false}
+const routes: {path: string, component: any, exact: boolean, guarded: boolean}[] = [
+    {path:'/', component: Login, exact:true, guarded: false},
+    {path:'/admin/login', component: AdminLogin, exact: false, guarded: false},
+    {path:'/admin/dashboard', component: AdminDashboard, exact: false, guarded: true},
+    {path:'/assessment', component: Assessment, exact:false, guarded: false},
+    {path:'/thank-you', component:ThankYou, exact:false, guarded: false},
+    {path:'/*', component: PageNotFound, exact:false, guarded: false}
 ];
 
 export default routes;

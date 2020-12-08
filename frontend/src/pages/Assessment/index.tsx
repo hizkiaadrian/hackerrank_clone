@@ -22,7 +22,7 @@ function Assessment() {
             }).then(async response => {
                 const res = await response.json();
                 if (res.success) {
-                    if (addDays((res.assessmentStarted as Date), 1) < new Date()) 
+                    if (res.assessmentStarted && addDays((res.assessmentStarted as Date), 1) < new Date()) 
                         history.replace("/thank-you");
                     else {
                         setAssessmentStarted(res.assessmentStarted);
@@ -51,7 +51,6 @@ function Assessment() {
         })
     };
 
-    
     return isLoading 
             ? <div className="centered-page">
                 <Loader

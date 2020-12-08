@@ -2,3 +2,5 @@
 /build
 /submissions
 /temp
+
+.env

@@ -1,10 +1,11 @@
 {
-    "submit": "http://localhost:8080/submit",
-    "run_code": "http://localhost:8080/run_code",
-    "validate_user": "http://localhost:8080/validate_user",
-    "check_assessment_started": "http://localhost:8080/check_assessment_started",
-    "start_assessment": "http://localhost:8080/start_assessment",
-    "check_submission": "http://localhost:8080/check_submission",
-    "get_all_users": "http://localhost:8080/get_all_users",
-    "create_new_user": "http://localhost:8080/create_new_user"
+    "submit": "http://localhost:8080/api/assessment/submit",
+    "run_code": "http://localhost:8080/api/assessment/run_code",
+    "validate_user": "http://localhost:8080/api/candidate/validate_user",
+    "check_assessment_started": "http://localhost:8080/api/candidate/check_assessment_started",
+    "start_assessment": "http://localhost:8080/api/candidate/start_assessment",
+    "check_submission": "http://localhost:8080/api/candidate/check_submission",
+    "admin_login": "http://localhost:8080/api/admin/authenticate",
+    "get_all_candidates": "http://localhost:8080/api/admin/get_all_candidates",
+    "create_new_user": "http://localhost:8080/api/admin/create_new_candidate"
 }

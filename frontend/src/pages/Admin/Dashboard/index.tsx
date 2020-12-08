@@ -1,50 +1,61 @@
 import React, { useEffect, useState } from 'react';
 import Links from '../../../configs/api-links.json';
 import NewUserForm from './NewUserForm';
+import { useHistory } from 'react-router-dom';
+import Loader from 'react-loader-spinner';
+import {Candidate} from '../shared.interface';
+import CandidatesList from './CandidatesList';
 
 function AdminDashboard() {
-    const [users, setUsers] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isError, setIsError] = useState(false);
+    const [candidates, setCandidates] = useState<Candidate[]>([]);
+
+    const history = useHistory();
 
     useEffect(() => {
-        fetch(Links.get_all_users, {method: 'GET'}).then(
+        if (!localStorage.getItem("token")) {
+            history.replace("/admin/login");
+            return;
+        }
+        fetch(Links.get_all_candidates, {method: 'GET', headers: {"Authorization": localStorage.getItem("token")?? ""}}).then(
             async response => {
                 const res = await response.json();
                 if (res.success) {
-                    setUsers(res.users);
+                    setCandidates(res.candidates);
+                    setIsLoading(false);
                 } else {
-                    console.log(res.error);
+                    setIsLoading(false);
+                    setIsError(true);
                 }
             }
         )
-    }, []);
+    }, [history]);
 
     return (
-        <div className="centered-page">
-            <table style={{marginBottom: "1rem"}}>
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Assessment start time</th>
-                        <th>Submission time</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {users && users.map((user, index) => 
-                        <tr key={user._id}>
-                            <td>{index + 1}</td>
-                            <td>{user.name}</td>
-                            <td>{user.email}</td>
-                            <td>{user.assessmentStarted ?? "Not started"}</td>
-                            <td>{user.submissionTime ?? "Not submitted"}</td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
-            <h3>Create new candidate</h3>
-            <NewUserForm/>
-        </div>
+        isLoading 
+            ? <div className="centered-page">
+                <Loader
+                    type="Puff"
+                    color="#00BFFF"
+                    height={100}
+                    width={100}
+                />
+                <h3>Loading</h3>
+            </div> 
+        : isError 
+            ? <div className="centered-page">
+                Error loading candidates list. Please refresh the page in a few minutes.
+            </div>
+            : <div className="centered-page">
+                <CandidatesList candidates={candidates} />
+                <NewUserForm/>
+                <div style={{display: "flex", flexDirection:"column", flex:"1 1 auto"}}/>
+                <div><button onClick={() => {
+                    localStorage.removeItem("token");
+                    history.push("/admin/login");
+                }}>Log out</button></div>
+            </div>
     );
 };
 
