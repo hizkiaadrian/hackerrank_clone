@@ -7,5 +7,6 @@
     "check_submission": "http://localhost:8080/api/candidate/check_submission",
     "admin_login": "http://localhost:8080/api/admin/authenticate",
     "get_all_candidates": "http://localhost:8080/api/admin/get_all_candidates",
-    "create_new_user": "http://localhost:8080/api/admin/create_new_candidate"
+    "create_new_user": "http://localhost:8080/api/admin/create_new_candidate",
+    "download_submission": "http://localhost:8080/api/admin/download_submission"
 }

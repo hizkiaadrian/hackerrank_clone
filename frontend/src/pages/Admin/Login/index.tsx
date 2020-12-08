@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import Links from '../../../configs/api-links.json';
 import { validateEmail } from '../../../utils';
 import { useHistory } from 'react-router-dom';
@@ -8,6 +8,10 @@ function AdminLogin() {
     const [errorMsg, setErrorMsg] = useState("");
 
     const history = useHistory();
+
+    useEffect(() => {
+        if (localStorage.getItem("token")) history.replace("/admin/dashboard");
+    });
 
     const onChange = (event : ChangeEvent<HTMLInputElement>) => setFormInput(oldForm => ({...oldForm, [event.target.id]:event.target.value}));
 

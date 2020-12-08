@@ -51,8 +51,8 @@ function AdminDashboard() {
             </div>
             : <div className="centered-page">
                 <CandidatesList candidates={candidates} />
-                <NewUserForm updateList={updateCandidatesList} />
                 <div style={{display: "flex", flexDirection:"column", flex:"1 1 auto"}}/>
+                <NewUserForm updateList={updateCandidatesList} />
                 <div><button onClick={() => {
                     localStorage.removeItem("token");
                     history.push("/admin/login");

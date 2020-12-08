@@ -46,6 +46,10 @@ table, th, td {
 	padding: 0.5rem;
 }
 
+table {
+	margin-bottom: 0.5rem;
+}
+
 th {
 	text-align: left;
 }

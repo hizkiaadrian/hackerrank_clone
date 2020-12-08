@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const fs = require("fs");
+const { response } = require('express');
 const Schema = mongoose.Schema;
 
 const candidateSchema = new Schema({
@@ -66,7 +68,7 @@ module.exports.validateCandidate = (req, res) => {
                 return;
         }}
     );
-}
+};
 
 module.exports.startAssessment = (req, res) => {
     let uuid = req.body.uuid;
@@ -81,7 +83,7 @@ module.exports.startAssessment = (req, res) => {
                 res.send({success: true, assessmentStarted: candidate.assessmentStarted});
         }
     });
-}
+};
 
 module.exports.checkAssessmentStarted = (req, res) => {
     let uuid = req.query.uuid;
@@ -96,7 +98,7 @@ module.exports.checkAssessmentStarted = (req, res) => {
                 res.send({success: false, error: "Candidate not found"});
         }
     });
-}
+};
 
 module.exports.checkSubmission = (req, res) => {
     let uuid = req.query.uuid;
@@ -111,4 +113,23 @@ module.exports.checkSubmission = (req, res) => {
                 res.send({success: false, error: "Candidate not found"});
         }
     });
-}
+};
+
+module.exports.downloadSubmission = (req, res) => {
+    const filePath = req.query.filePath;
+
+    fs.access(`submissions/${filePath}`, fs.constants.F_OK, (err) => {
+        if (err) {
+            console.log(err);
+            res.writeHead(400, {"Content-Type": "text/plain"});
+            res.end("ERROR File does not exist");
+        }
+        else {
+            res.writeHead(200, {
+                "Content-Type": "application/octet-stream",
+                "Content-Disposition": "attachment; filename=" + filePath
+            });
+            fs.createReadStream(`submissions/${filePath}`).pipe(res);
+        }
+    });
+};
