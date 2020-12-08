@@ -62,26 +62,26 @@ function Editor({defaultValue, testCases}: {defaultValue: string, testCases: Tes
 
 	return (
 		<div className="editor">
-		<div className="editor-wrapper">
-			<AceEditor 
-				ref={codeEditor}
-				mode="python"
-				theme="monokai" 
-				defaultValue={defaultValue}
-				onLoad={foldMainFunction}
-			/>
-		</div>
-		<div className="right-aligned-row">
-			<button onClick={submitCode} disabled={buttonsDisabled}>Submit</button>
-			<span className="spacer"></span>
-			<button onClick={runCode} disabled={buttonsDisabled}>Run Code</button>
-		</div>
-			{testCaseResults.length > 0 && 
-			<TestCasesPanel 
-				testCaseResults={testCaseResults}
-				testCases={testCases}
-			/>
-			}
+			<div className="editor-wrapper">
+				<AceEditor 
+					ref={codeEditor}
+					mode="python"
+					theme="monokai" 
+					defaultValue={defaultValue}
+					onLoad={foldMainFunction}
+				/>
+			</div>
+			<div className="right-aligned-row">
+				<button onClick={submitCode} disabled={buttonsDisabled}>Submit</button>
+				<span className="spacer"></span>
+				<button onClick={runCode} disabled={buttonsDisabled}>Run Code</button>
+			</div>
+				{testCaseResults.length > 0 && 
+					<TestCasesPanel 
+						testCaseResults={testCaseResults}
+						testCases={testCases}
+					/>
+				}
 		</div>
 	);
 };

@@ -1,5 +1,7 @@
 {
     "submit": "http://localhost:8080/submit",
     "run_code": "http://localhost:8080/run_code",
-    "validate_user": "http://localhost:8080/validate_user"
+    "validate_user": "http://localhost:8080/validate_user",
+    "check_assessment_started": "http://localhost:8080/check_assessment_started",
+    "start_assessment": "http://localhost:8080/start_assessment"
 }

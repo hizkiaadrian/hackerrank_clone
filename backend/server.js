@@ -8,6 +8,7 @@ const events = require('events');
 const mongoose = require('mongoose');
 
 const User = require('./db_schemas/user');
+const e = require('express');
 
 const mongoDB = 'mongodb://127.0.0.1/my_database';
 mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
@@ -105,14 +106,44 @@ app.post('/validate_user', (req, res) => {
                 return;
             }
 
-            if (user.assessmentStarted) {
-                res.send({success: false, error: "Assessment started."});
+            if (user.submissionTime) {
+                res.send({success: false, error: "Assessment completed."});
                 return;
             }
                 res.send({success: true, userId: user._id});
                 return;
         }}
     );
+});
+
+app.get('/check_assessment_started', async (req, res) => {
+    let uuid = req.query.uuid;
+
+    User.findById(uuid, (err, user) => {
+        if (err)
+            res.send({success: false, error: err.message});
+        else {
+            if (user)
+                res.send({success: true, assessmentStarted: user.assessmentStarted});
+            else
+                res.send({success: false, error: "User not found"});
+        }
+    });
+});
+
+app.post('/start_assessment', async (req, res) => {
+    let uuid = req.body.uuid;
+
+    User.findByIdAndUpdate(uuid, {assessmentStarted: Date.now()}, {new: true}, (err, user) => {
+        if (err)
+            res.send({success: false, error: err});
+        else {
+            if (!user)
+                res.send({success: false, error: "User not found"});
+            else
+                res.send({success: true, user});
+        }
+    });
 });
 
 const port = process.env.PORT || 8080;
