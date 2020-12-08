@@ -1,5 +1,5 @@
 import React from 'react';
-import {useLatex as latexify} from '../pages/Assessment/Question';
+import {useLatex as latexify} from '../utils';
 
 const AdditionOfTwoNumbers = {
 	question: {

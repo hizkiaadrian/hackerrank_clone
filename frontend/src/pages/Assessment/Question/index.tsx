@@ -2,8 +2,6 @@ import React from 'react';
 import {QuestionInterface} from '../shared.interface';
 import MathJax from 'react-mathjax';
 
-export const useLatex = (input : string) => <MathJax.Node inline formula={input}/>;
-
 function Question({question}: {question: QuestionInterface}) {
     return (
         <MathJax.Provider>

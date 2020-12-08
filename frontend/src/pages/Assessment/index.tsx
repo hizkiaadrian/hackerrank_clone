@@ -6,12 +6,7 @@ import './Assessment.css';
 import { Redirect, useHistory } from 'react-router-dom';
 import Links from '../../configs/api-links.json';
 import Loader from 'react-loader-spinner';
-
-function addDays(date: Date, days: number) {
-    let temp = new Date(date);
-    temp.setDate(temp.getDate() + days);
-    return temp;
-}
+import { addDays } from '../../utils/index';
 
 function Assessment() {
     const [isLoading, setIsLoading] = useState(true);
@@ -27,8 +22,12 @@ function Assessment() {
             }).then(async response => {
                 const res = await response.json();
                 if (res.success) {
-                    setAssessmentStarted(res.assessmentStarted);
-                    setIsLoading(false);
+                    if (addDays((res.assessmentStarted as Date), 1) < new Date()) 
+                        history.replace("/thank-you");
+                    else {
+                        setAssessmentStarted(res.assessmentStarted);
+                        setIsLoading(false);
+                    }
                 }
                 else history.replace("/");
             });

@@ -93,6 +93,15 @@ app.post('/create_new_user', (req, res) => {
     });
 });
 
+app.get('/get_all_users', (req, res) => {
+    User.find((err, users) => {
+        if (err)
+            res.send({success: false, error: err});
+        else
+            res.send({success: true, users});
+    });
+});
+
 // TODO: fix error message
 app.post('/validate_user', (req, res) => {
     User.findOne({email: req.body.email}, (err, user) => {
@@ -107,7 +116,7 @@ app.post('/validate_user', (req, res) => {
             }
 
             if (user.submissionTime) {
-                res.send({success: false, error: "Assessment completed."});
+                res.send({success: false, error: "Assessment completed.", userId: user._id});
                 return;
             }
                 res.send({success: true, userId: user._id});
@@ -131,6 +140,21 @@ app.get('/check_assessment_started', async (req, res) => {
     });
 });
 
+app.get('/check_submission', async (req, res) => {
+    let uuid = req.query.uuid;
+
+    User.findById(uuid, (err, user) => {
+        if (err)
+            res.send({success: false, error: err.message});
+        else {
+            if (user) 
+                res.send({success: true, submitted: user.submission !== null});
+            else
+                res.send({success: false, error: "User not found"});
+        }
+    });
+});
+
 app.post('/start_assessment', async (req, res) => {
     let uuid = req.body.uuid;
 
@@ -141,7 +165,7 @@ app.post('/start_assessment', async (req, res) => {
             if (!user)
                 res.send({success: false, error: "User not found"});
             else
-                res.send({success: true, user});
+                res.send({success: true, assessmentStarted: user.assessmentStarted});
         }
     });
 });
