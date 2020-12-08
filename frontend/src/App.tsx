@@ -7,11 +7,11 @@ import AppRouter from './components/AppRouter';
 function App() {
 	return (
 		<>
-		<TopNav/>
-		<div className="App">
-			<AppRouter/>
-		</div>
-		<Footer />
+			<TopNav/>
+			<div className="App">
+				<AppRouter/>
+			</div>
+			<Footer />
 		</>
 	);
 };

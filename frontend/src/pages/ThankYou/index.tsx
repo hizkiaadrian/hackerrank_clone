@@ -11,7 +11,7 @@ function ThankYou() {
     const history = useHistory();
 
     useEffect(() => {
-        let userId = sessionStorage.getItem('uuid');
+        let userId = localStorage.getItem('uuid');
         if (!userId)
             history.replace("/");
         else {
@@ -22,7 +22,7 @@ function ThankYou() {
                 if (res.success) {
                     if (res.submitted) {
                         setIsLoading(false);
-                        sessionStorage.clear();
+                        localStorage.clear();
                         return;
                     }
                     else {

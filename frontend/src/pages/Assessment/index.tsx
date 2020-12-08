@@ -14,9 +14,9 @@ function addDays(date: Date, days: number) {
 }
 
 function Assessment() {
-    const [loading, setLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
     const [assessmentStarted, setAssessmentStarted] = useState<Date | null>(null);
-    const userId = sessionStorage.getItem('uuid');
+    const userId = localStorage.getItem('uuid');
 
     const history = useHistory();
 
@@ -28,11 +28,13 @@ function Assessment() {
                 const res = await response.json();
                 if (res.success) {
                     setAssessmentStarted(res.assessmentStarted);
-                    setLoading(false);
+                    setIsLoading(false);
                 }
                 else history.replace("/");
             });
-        }
+        } 
+        else
+            history.replace("/");
     }, [userId, history]);
 
     const startAssessment = () => {
@@ -51,7 +53,7 @@ function Assessment() {
     };
 
     
-    return loading 
+    return isLoading 
             ? <div className="centered-page">
                 <Loader
                     type="Puff"
