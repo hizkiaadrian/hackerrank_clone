@@ -1,11 +1,10 @@
 import React from 'react';
-import '../styles/Question.css';
-import QuestionParameters from '../interfaces/QuestionParameters.interface';
+import {QuestionInterface} from '../shared.interface';
 import MathJax from 'react-mathjax';
 
 export const useLatex = (input : string) => <MathJax.Node inline formula={input}/>;
 
-function Question({question}: QuestionParameters) {
+function Question({question}: {question: QuestionInterface}) {
     return (
         <MathJax.Provider>
             <div className="question">
@@ -56,7 +55,7 @@ function Question({question}: QuestionParameters) {
                 }
             </div>
         </MathJax.Provider>
-    )
-}
+    );
+};
 
 export default Question;

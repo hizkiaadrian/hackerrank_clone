@@ -37,17 +37,17 @@ app.post('/run_code', (req, res) => {
         const python = spawn('python', ['temp/script.py']);
 
         let stdout, isSuccess;
-        python.stdout.on('data', data => {
+        python.stdout.on('data', data => { // jshint ignore:line
             stdout = data.toString();
             isSuccess = true;
         });
-        python.stderr.on('data', data => {
+        python.stderr.on('data', data => { // jshint ignore:line
             stdout = data.toString();
             isSuccess = false;
         });
         python.stdin.write(testCases[i].input);
         python.stdin.end();
-        python.on('close', () => {
+        python.on('close', () => { // jshint ignore:line
             testCaseResults.push({success: isSuccess, stdin: testCases[i].input, stdout: stdout, expected: testCases[i].expectedOutput});
             if (i === testCases.length - 1) emitter.emit('end');
         });
@@ -92,15 +92,16 @@ app.post('/create_new_user', (req, res) => {
     });
 });
 
+// TODO: fix error message
 app.post('/validate_user', (req, res) => {
     User.findOne({email: req.body.email}, (err, user) => {
         if (err) {
-            res.send({success: false, error: "Something went wrong."});
+            res.send({success: false, error: "Something went wrong. Please contact *technical_issues mail*"});
             return;
         }
         else {
             if (!user) {
-                res.send({success: false, error: "User not found."});
+                res.send({success: false, error: "User not registered. Please register at *provide link to application form*"});
                 return;
             }
 
@@ -108,21 +109,11 @@ app.post('/validate_user', (req, res) => {
                 res.send({success: false, error: "Assessment started."});
                 return;
             }
-            
-            User.updateOne({_id: user._id}, {
-                assessmentStarted: Date.now()
-            }, (err, _) => {
-                if (err) {
-                    res.send({success: false, error: "Something went wrong."});
-                    return;
-                }
-
                 res.send({success: true, userId: user._id});
                 return;
-            });
-        }
-    });
-})
+        }}
+    );
+});
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`App running on port ${port}`));

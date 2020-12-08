@@ -1,8 +1,8 @@
 import React from 'react';
 import Question from './Question';
 import Editor from './Editor';
-import AdditionOfTwoNumbers from '../questions/AdditionOfTwoNumbers';
-import '../styles/Assessment.css';
+import AdditionOfTwoNumbers from '../../questions/AdditionOfTwoNumbers';
+import './Assessment.css';
 
 function Assessment() {
     return (

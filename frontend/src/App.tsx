@@ -1,30 +1,26 @@
-import React from 'react';
-import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+import React, { useMemo, useState } from 'react';
 import './App.css';
-import Login from './components/Login';
-import Assessment from './components/Assessment';
-import ThankYou from './components/ThankYou';
-import PageNotFound from './components/PageNotFound';
 import TopNav from './components/TopNav';
 import Footer from './components/Footer';
+import { UserContext } from './contexts/UserContext';
+import AppRouter from './components/AppRouter';
 
 function App() {
-  return (
-    <>
-      <TopNav/>
-      <div className="App">
-        <Router>
-          <Switch>
-            <Route path="/" exact component={Login} />
-            <Route path="/assessment" component={Assessment} />
-            <Route path="/thank-you" component={ThankYou} />
-            <Route render={PageNotFound} />
-          </Switch>
-        </Router>
-      </div>
-      <Footer />
-    </>
-  );
-}
+	const [user, setUser] = useState<any>(null);
+
+	const providerValue = useMemo(() => ({user, setUser}), [user, setUser]);
+
+	return (
+		<>
+		<TopNav/>
+		<div className="App">
+			<UserContext.Provider value={providerValue}>
+			<AppRouter/>
+			</UserContext.Provider>
+		</div>
+		<Footer />
+		</>
+	);
+};
 
 export default App;
