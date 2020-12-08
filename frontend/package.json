@@ -16,6 +16,7 @@
     "react": "^17.0.1",
     "react-ace": "^9.2.0",
     "react-dom": "^17.0.1",
+    "react-loader-spinner": "^3.1.14",
     "react-mathjax": "^1.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
@@ -46,5 +47,8 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:8080"
+  "proxy": "http://localhost:8080",
+  "devDependencies": {
+    "@types/react-loader-spinner": "^3.1.2"
+  }
 }

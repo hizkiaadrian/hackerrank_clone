@@ -1,49 +1,49 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import './Login.css';
-import Links from '../../configs/api-links.json';
+import Links from '../../../configs/api-links.json';
 
 function validateEmail(email : string) {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
 };
 
-function Login() {
-    const [email, setEmail] = useState("");
+function NewUserForm() {
+    const [formInput, setFormInput] = useState({name: "", email: ""});
     const [errorMsg, setErrorMsg] = useState("");
 
-    const history = useHistory();
-
-    const onChange = (event : ChangeEvent<HTMLInputElement>) => setEmail(event.target.value);
+    const onChange = (event : ChangeEvent<HTMLInputElement>) => setFormInput(oldForm => ({...oldForm, [event.target.id]:event.target.value}));
 
     const onSubmit = (event : FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        if (!validateEmail(email)) {
-            setErrorMsg("Please enter a valid email");
+        if (!validateEmail(formInput.email) || formInput.name === "") {
+            setErrorMsg("Please enter a valid name and email");
             setTimeout(() => setErrorMsg(""), 2000);
             return false;
         }
 
-        fetch(Links.validate_user, {method: 'POST',
+        fetch(Links.create_new_user, {method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({email: email})
+            body: JSON.stringify(formInput)
         }).then(async response => {
             const res = await response.json();
-            sessionStorage.setItem('uuid', res.userId);
             if (res.success) {
-                history.push("/assessment");
+                console.log(res);
             }
-            else if (res.error === "Assessment completed.") history.push("/thank-you");
             else setErrorMsg(res.error);
         });
     };
-
+    
     return (
-        <div className="login">
-            <h1>Welcome to OSG Digital Assessment Platform</h1>
+        <>
             <form onSubmit={onSubmit}>
                 <div className="input-group">
+                    <label htmlFor="name">Name</label>
+                    <input 
+                        id="name" 
+                        type="text"
+                        placeholder="Required" 
+                        onChange={onChange}
+                    />
                     <label htmlFor="email">Email</label>
                     <input 
                         id="email" 
@@ -52,11 +52,11 @@ function Login() {
                         onChange={onChange}
                     />
                 </div>
-                <button type="submit">Log in</button>
+                <button type="submit">Create new user</button>
             </form>
             <div className="error-message">{errorMsg}</div>
-        </div>
+        </>
     );
 };
 
-export default Login;
+export default NewUserForm;

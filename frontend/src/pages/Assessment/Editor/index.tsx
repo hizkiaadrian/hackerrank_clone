@@ -15,9 +15,11 @@ const foldMainFunction = (editor: any) => {
 	editor.getSession().foldAll(startLine, lines.length);
 };
 
-function Editor({defaultValue, testCases}: {defaultValue: string, testCases: TestCase[]}) {
+function Editor({defaultValue, testCases, deadline}: {defaultValue: string, testCases: TestCase[], deadline: Date}) {
 	const [buttonsDisabled, setButtonsDisabled] = useState(false);
 	const [testCaseResults, setTestCaseResults] = useState<TestCaseResult[]>([]);
+
+	const deadlineString = deadline.toLocaleString('en-GB', {day:"numeric", month:"long", year: "numeric", hour:"numeric", minute: "numeric"});
 
 	const codeEditor = useRef(null);
 
@@ -62,6 +64,7 @@ function Editor({defaultValue, testCases}: {defaultValue: string, testCases: Tes
 
 	return (
 		<div className="editor">
+			<div className="right-aligned-row"><h2 style={{margin: 0, padding: 0}}>Deadline: {deadlineString}</h2></div>
 			<div className="editor-wrapper">
 				<AceEditor 
 					ref={codeEditor}
