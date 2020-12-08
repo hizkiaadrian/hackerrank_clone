@@ -51,7 +51,7 @@ function Editor({defaultValue, testCases, deadline}: {defaultValue: string, test
 		fetch(Links.submit, {
 			method: 'POST',
 			headers: {'Content-Type': 'application/json'},
-			body: JSON.stringify({code: code, userId: sessionStorage.getItem('uuid')})
+			body: JSON.stringify({code: code, userId: localStorage.getItem('uuid')})
 		})
 			.then(async response => {
 				const res = await response.json();
