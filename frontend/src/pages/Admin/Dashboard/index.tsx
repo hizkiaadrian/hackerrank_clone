@@ -18,19 +18,21 @@ function AdminDashboard() {
             history.replace("/admin/login");
             return;
         }
-        fetch(Links.get_all_candidates, {method: 'GET', headers: {"Authorization": localStorage.getItem("token")?? ""}}).then(
-            async response => {
-                const res = await response.json();
-                if (res.success) {
-                    setCandidates(res.candidates);
-                    setIsLoading(false);
-                } else {
-                    setIsLoading(false);
-                    setIsError(true);
-                }
-            }
-        )
+        const initiateCandidatesList = async () => updateCandidatesList();
+
+        initiateCandidatesList();
     }, [history]);
+
+    const updateCandidatesList= async () => {
+        const response = await (await fetch(Links.get_all_candidates, {method: 'GET', headers: {"Authorization": localStorage.getItem("token")?? ""}})).json();
+        if (response.success) {
+            setCandidates(response.candidates);
+            setIsLoading(false);
+        } else {
+            setIsLoading(false);
+            setIsError(true);
+        }
+    }
 
     return (
         isLoading 
@@ -49,7 +51,7 @@ function AdminDashboard() {
             </div>
             : <div className="centered-page">
                 <CandidatesList candidates={candidates} />
-                <NewUserForm/>
+                <NewUserForm updateList={updateCandidatesList} />
                 <div style={{display: "flex", flexDirection:"column", flex:"1 1 auto"}}/>
                 <div><button onClick={() => {
                     localStorage.removeItem("token");

@@ -2,7 +2,7 @@ import React, { ChangeEvent, FormEvent, useState } from 'react';
 import Links from '../../../configs/api-links.json';
 import { validateEmail } from '../../../utils/index';
 
-function NewUserForm() {
+function NewUserForm({updateList} : {updateList : () => Promise<void>}) {
     const [formInput, setFormInput] = useState({name: "", email: ""});
     const [errorMsg, setErrorMsg] = useState("");
 
@@ -25,7 +25,7 @@ function NewUserForm() {
         }).then(async response => {
             const res = await response.json();
             if (res.success) {
-                console.log(res);
+                updateList();
                 resetForm();
             }
             else setErrorMsg(res.error);
