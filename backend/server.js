@@ -33,6 +33,6 @@ require("./api/middlewares/authentication")(passport);
 
 app.use('/api', require('./api/routes'));
 
-app.get('/', (_, res) => res.sendFile(path.join(__dirname, 'build', 'index.html')));
+app.get('*', (_, res) => res.sendFile(path.join(__dirname, 'build', 'index.html')));
 
 app.listen(port, () => console.log(`App running on port ${port}`));

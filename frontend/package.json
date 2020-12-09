@@ -30,7 +30,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && move build backend/build"
+    "build": "react-scripts build && move build ../backend/build"
   },
   "eslintConfig": {
     "extends": [
