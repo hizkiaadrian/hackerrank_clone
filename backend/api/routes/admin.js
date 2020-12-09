@@ -10,5 +10,8 @@ router.post('/authenticate', Admin.getUserByEmail);
 router.get('/download_submission', authenticate(), Candidate.downloadSubmission);
 router.post('/create_new_candidate', authenticate(), Candidate.createNewCandidate);
 router.get('/get_all_candidates', authenticate(), Candidate.getAllCandidates);
+router.get('/validate', authenticate(), (req, res) => {
+    res.send({user: req.email});
+})
 
 module.exports = router;

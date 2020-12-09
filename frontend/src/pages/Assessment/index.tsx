@@ -4,9 +4,9 @@ import Editor from './Editor';
 import AdditionOfTwoNumbers from '../../questions/AdditionOfTwoNumbers';
 import './Assessment.css';
 import { Redirect, useHistory } from 'react-router-dom';
-import Links from '../../configs/api-links.json';
 import Loader from 'react-loader-spinner';
-import { addDays } from '../../utils/index';
+import { addDays } from '../../utils';
+import { checkAssessmentStarted, startAssessment } from '../apiFunctions';
 
 function Assessment() {
     const [isLoading, setIsLoading] = useState(true);
@@ -17,39 +17,19 @@ function Assessment() {
 
     useEffect(() => {
         if (userId) {
-            fetch(`${Links.check_assessment_started}?uuid=${encodeURIComponent(userId)}`, {
-                method: 'GET'
-            }).then(async response => {
-                const res = await response.json();
-                if (res.success) {
-                    if (res.assessmentStarted && addDays((res.assessmentStarted as Date), 1) < new Date()) 
-                        history.replace("/thank-you");
-                    else {
-                        setAssessmentStarted(res.assessmentStarted);
+            (async (success : Function, deadlinePassed: Function, reject: Function) => 
+                checkAssessmentStarted(userId, success, deadlinePassed, reject))(
+                    (startDate : Date) => {
+                        setAssessmentStarted(startDate);
                         setIsLoading(false);
-                    }
-                }
-                else history.replace("/");
-            });
+                    },
+                    () => history.replace("/thank-you"),
+                    () => history.replace("/")
+                );
         } 
         else
             history.replace("/");
     }, [userId, history]);
-
-    const startAssessment = () => {
-        fetch(Links.start_assessment, {
-			method: 'POST',
-			headers: {'Content-Type': 'application/json'},
-			body: JSON.stringify({uuid: userId})
-		}).then(async response => {
-            const res = await response.json();
-            if (res.success) {
-                setAssessmentStarted(res.assessmentStarted as Date);
-            } else {
-                history.replace("/");
-            }
-        })
-    };
 
     return isLoading 
             ? <div className="centered-page">
@@ -71,7 +51,11 @@ function Assessment() {
                             </div>
                         </> 
                         : <div className="centered-page">
-                            <button onClick={startAssessment}>
+                            <button onClick={async () => await startAssessment(
+                                userId,
+                                (startTime : Date) => setAssessmentStarted(startTime),
+                                () => history.replace("/")
+                            )}>
                                 Start assessment?
                             </button>
                             <ol>

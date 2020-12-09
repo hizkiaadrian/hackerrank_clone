@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import Links from '../../../configs/api-links.json';
 import NewUserForm from './NewUserForm';
 import { useHistory } from 'react-router-dom';
 import Loader from 'react-loader-spinner';
-import {Candidate} from '../shared.interface';
+import { Candidate } from '../shared.interface';
 import CandidatesList from './CandidatesList';
+import { validateAdmin, getCandidatesList } from '../adminApiFunctions';
 
 function AdminDashboard() {
     const [isLoading, setIsLoading] = useState(true);
@@ -14,17 +14,15 @@ function AdminDashboard() {
     const history = useHistory();
 
     useEffect(() => {
-        if (!localStorage.getItem("token")) {
-            history.replace("/admin/login");
-            return;
-        }
+        (async function() {await validateAdmin(() => {}, () => history.replace("/admin/login"))})();
+
         const initiateCandidatesList = async () => updateCandidatesList();
 
         initiateCandidatesList();
     }, [history]);
 
     const updateCandidatesList= async () => {
-        const response = await (await fetch(Links.get_all_candidates, {method: 'GET', headers: {"Authorization": localStorage.getItem("token")?? ""}})).json();
+        const response = await getCandidatesList();
         if (response.success) {
             setCandidates(response.candidates);
             setIsLoading(false);

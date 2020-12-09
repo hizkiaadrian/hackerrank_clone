@@ -1,12 +1,11 @@
 // @ts-nocheck
 
 import React from 'react'
-import {Candidate} from '../shared.interface';
-import {useTable, usePagination} from 'react-table';
+import { Candidate } from '../shared.interface';
+import { useTable, usePagination } from 'react-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faDownload} from '@fortawesome/free-solid-svg-icons';
-
-import Links from '../../../configs/api-links.json';
+import { faDownload } from '@fortawesome/free-solid-svg-icons';
+import { downloadSubmission } from '../adminApiFunctions';
 
 function CandidatesList({candidates} : {candidates: Candidate[]}) {
     const data = React.useMemo(() => candidates, [candidates]);
@@ -18,20 +17,6 @@ function CandidatesList({candidates} : {candidates: Candidate[]}) {
             {Header: "Assessment started", accessor: "assessmentStarted"},
             {Header: "Submission time", accessor: "submissionTime"}
         ], []);
-
-    const downloadSubmission = async (filePath: string) => {
-        const response = await fetch(
-            `${Links.download_submission}?filePath=${filePath}`, 
-            {
-                method: 'GET', 
-                headers:{"Authorization": localStorage.getItem("token") ?? ""}
-            });
-        const blob = await response.blob();
-        const link = document.createElement('a');
-        link.setAttribute('href', window.URL.createObjectURL(blob));
-        link.setAttribute('download', filePath);
-        link.click();
-    }
     
     const {
         getTableProps,

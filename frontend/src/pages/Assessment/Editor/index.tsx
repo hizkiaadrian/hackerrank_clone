@@ -3,12 +3,12 @@ import {useHistory} from 'react-router-dom';
 
 import {TestCase, TestCaseResult} from '../shared.interface';
 import TestCasesPanel from '../TestCasesPanel';
-import Links from '../../../configs/api-links.json';
 
 import AceEditor from 'react-ace';
 import 'brace/mode/python';
 import 'brace/theme/monokai';
 import Loader from 'react-loader-spinner';
+import { runCurrentCode, submitToServer } from '../../apiFunctions';
 
 const foldMainFunction = (editor: any) => {
 	const lines: string[] = editor.session.doc.getAllLines();
@@ -27,43 +27,34 @@ function Editor({defaultValue, testCases, deadline}: {defaultValue: string, test
 	
 	const deadlineString = deadline.toLocaleString('en-GB', {day:"numeric", month:"long", year: "numeric", hour:"numeric", minute: "numeric"});
 
-	const runCode = (event: MouseEvent) => {
+	const runCode = async (event: MouseEvent) => {
 		event.preventDefault();
 
 		setIsLoading(true);
 		const code = (codeEditor.current as any)?.editor.getValue();
-		fetch(Links.run_code, {
-			method: 'POST',
-			headers: {'Content-Type': 'application/json'},
-			body: JSON.stringify({code: code, testCases: testCases})
+
+		await runCurrentCode(code, testCases, (results: TestCaseResult[]) => {
+			setTestCaseResults(results);
+			setIsLoading(false);
 		})
-			.then(async response => {
-				setTestCaseResults((await response.json()).testCaseResults);
-				setIsLoading(false);
-			});
 	};
 
-	const submitCode = (event: MouseEvent) => {
+	const submitCode = async (event: MouseEvent) => {
 		event.preventDefault();
 	
 		setIsLoading(true);
 		const code = (codeEditor.current as any)?.editor.getValue();
-		fetch(Links.submit, {
-			method: 'POST',
-			headers: {'Content-Type': 'application/json'},
-			body: JSON.stringify({code: code, userId: localStorage.getItem('uuid')})
-		})
-			.then(async response => {
-				const res = await response.json();
-				if (res.success) {
-					history.push("/thank-you");
-				} else {
-					setIsLoading(false);
-					setErrorMsg(res.error);
-					setTimeout(() => setErrorMsg(""), 2000);
-					return false;
-				}
-			});
+		await submitToServer(
+			code,
+			localStorage.getItem('uuid') ?? "",
+			() => history.push("/thank-you"),
+			(error: string) => {
+				setIsLoading(false);
+				setErrorMsg(error);
+				setTimeout(() => setErrorMsg(""), 2000);
+				return false;
+			}
+		);
 	};
 
 	return (

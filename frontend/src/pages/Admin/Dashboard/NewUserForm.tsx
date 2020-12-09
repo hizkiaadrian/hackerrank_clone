@@ -1,6 +1,6 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
-import Links from '../../../configs/api-links.json';
-import { validateEmail } from '../../../utils/index';
+import { validateEmail } from '../../../utils';
+import { createNewUser } from '../adminApiFunctions';
 
 function NewUserForm({updateList} : {updateList : () => Promise<void>}) {
     const [formInput, setFormInput] = useState({name: "", email: ""});
@@ -10,7 +10,7 @@ function NewUserForm({updateList} : {updateList : () => Promise<void>}) {
 
     const resetForm = () => setFormInput({name: "", email: ""});
 
-    const onSubmit = (event : FormEvent<HTMLFormElement>) => {
+    const onSubmit = async (event : FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         if (!validateEmail(formInput.email) || formInput.name === "") {
@@ -18,18 +18,7 @@ function NewUserForm({updateList} : {updateList : () => Promise<void>}) {
             setTimeout(() => setErrorMsg(""), 2000);
             return false;
         }
-
-        fetch(Links.create_new_user, {method: 'POST',
-            headers: {'Content-Type': 'application/json', 'Authorization': localStorage.getItem("token") ?? ""},
-            body: JSON.stringify(formInput)
-        }).then(async response => {
-            const res = await response.json();
-            if (res.success) {
-                updateList();
-                resetForm();
-            }
-            else setErrorMsg(res.error);
-        });
+        await createNewUser(formInput, () => {updateList(); resetForm();}, (str: string) => setErrorMsg(str));
     };
     
     return (

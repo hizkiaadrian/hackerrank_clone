@@ -1,7 +1,7 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import Links from '../../../configs/api-links.json';
 import { validateEmail } from '../../../utils';
 import { useHistory } from 'react-router-dom';
+import { adminLogin, validateAdmin } from '../adminApiFunctions';
 
 function AdminLogin() {
     const [formInput, setFormInput] = useState({email: "", password: ""});
@@ -10,12 +10,12 @@ function AdminLogin() {
     const history = useHistory();
 
     useEffect(() => {
-        if (localStorage.getItem("token")) history.replace("/admin/dashboard");
-    });
+        (async function() {validateAdmin(() => history.replace("/admin/dashboard"), () => {});})();
+    }, [history]);
 
     const onChange = (event : ChangeEvent<HTMLInputElement>) => setFormInput(oldForm => ({...oldForm, [event.target.id]:event.target.value}));
 
-    const onSubmit = (event : FormEvent<HTMLFormElement>) => {
+    const onSubmit = async (event : FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         if (!validateEmail(formInput.email) || formInput.password === "") {
@@ -23,17 +23,7 @@ function AdminLogin() {
             setTimeout(() => setErrorMsg(""), 2000);
             return false;
         };
-        fetch(Links.admin_login, {method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(formInput)
-        }).then(async response => {
-            const res = await response.json();
-            if (res.success) {
-                localStorage.setItem("token", res.token);
-                history.push("/admin/dashboard");
-            }
-            else setErrorMsg(res.error);
-        });
+        adminLogin(formInput, () => history.push("/admin/dashboard"), (str : string) => setErrorMsg(str));
     };
 
     return (
